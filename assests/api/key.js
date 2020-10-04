@@ -1,2 +1,2 @@
-var gkey = "";
-var grkey = "";
+var googleKey = "";
+var goodreadsKey = "";
