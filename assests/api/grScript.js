@@ -1,4 +1,4 @@
-function runQuery(queryURL, dataType) {
+function runQuery(queryURL, dataType, resultTo) {
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -7,11 +7,21 @@ function runQuery(queryURL, dataType) {
             console.log("response", response);
             switch (dataType) {
                 case "json":
-                    console.log("json response", response);
+                    break;
                 case "xml":
-                    console.log("converting");
-                    var xml2json = parseXmlToJson(response);
-                    console.log("from xml to json", xml2json);
+                    response = parseXmlToJson(response);
+                    break;
+            }
+            switch (resultTo) {
+                case "Popular":
+                    addToPopular(response);
+                    break;
+                case "SearchResult":
+                    addToSearch(response);
+                    break;
+                case "AllAboutABook":
+                    allAboutABook(response);
+                    break;
             }
         });
 }
@@ -53,7 +63,7 @@ function createGoogleQueryURL(freetext = "", title = "", author = "", subject = 
         inoclc = "oclc:" + oclc + "+";
     }
 
-    var searchString = freetext + inTitle + inAuthor + 
+    var searchString = freetext + inTitle + inAuthor +
         inPublisher + inSubject + inisbn + inlccn + inoclc;
 
     if (searchString[searchString.length - 1] === "+") {
@@ -63,8 +73,6 @@ function createGoogleQueryURL(freetext = "", title = "", author = "", subject = 
     return "https://www.googleapis.com/books/v1/volumes?q=" +
         searchString + "&key=" + googleKey;
 }
-
-//var goodreadsTest = runQuery(createGoogleQueryURL("math", "", "ian stewart"), "json");
 
 // https://www.goodreads.com/api/index#author.books
 function createGoodreadsQueryURL(title = "", author = "", isbn = "", authorID = "") {
@@ -92,23 +100,17 @@ function createGoodreadsQueryURL(title = "", author = "", isbn = "", authorID = 
     return proxyurl + goodreadsurl + grQueryURL;
 }
 
-function parseXmlToJson(xmlFile) {
-    // if (window.DOMParser) {
-    //     parser = new DOMParser();
-    //     xmlDoc = parser.parseFromString(xmlString, "text/xml");
-    //     console.log("xmlDoc", xmlDoc);
-    // }
-    // else {
-    //     xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-    //     xmlDoc.async = false;
-    //     xmlDoc.loadXML(xmlString);
-    // }
-    return JSON.parse(xml2json(xmlFile, ""));
+// https://developer.nytimes.com/docs/books-product/1/overview
+function createNYTQueryURL() {
+    nytQueryURL = "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=" + NYTKey;
+    console.log(nytQueryURL);
+    return nytQueryURL;
 }
 
-//var goodreadsTest = runQuery(createGoodreadsQueryURL("hatchet", "", ""), "xml");
-//var goodreadsTest = runQuery(createGoodreadsQueryURL("", "stewart", ""), "xml");
-var goodreadsTest = runQuery(createGoodreadsQueryURL("", "", "", "18541"), "xml");
+
+function parseXmlToJson(xmlFile) {
+    return JSON.parse(xml2json(xmlFile, ""));
+}
 
 function goodreadsDescAsHTML(jsonDoc) {
     var description = jsonDoc.GoodreadsResponse.author.books.book[0].description;
@@ -116,3 +118,156 @@ function goodreadsDescAsHTML(jsonDoc) {
     description = description.replace(/&gt;/g, ">")
     return description;
 }
+
+function addToPopular(qResponse) {
+    var books = qResponse.results.books;
+    $(".recommended-list").empty();
+    for (var i = 0; i < 10; i++) {
+        var div = $("<div>");
+        div.attr("isbn", books[i].primary_isbn10);
+
+        var bookTitle = $("<p>");
+        bookTitle.text(books[i].title);
+        div.append(bookTitle);
+
+        var author = $("<p>");
+        author.text(books[i].author);
+        div.append(author);
+
+        var img = $("<img>");
+        var scale = 25 / 100;
+        img.height(books[i].book_image_height * scale);
+        img.width(books[i].book_image_width * scale);
+        img.attr("src", books[i].book_image);
+        div.append(img);
+
+        $(".recommended-list").append(div);
+    }
+}
+
+function addToSearch(qResponse) {
+    var books = qResponse.items;
+    $(".search-results").empty();
+    for (var i = 0; i < 10; i++) {
+        if (books[i].volumeInfo.hasOwnProperty("industryIdentifiers")) {
+            var div = $("<div>");
+            var isbn = books[i].volumeInfo.industryIdentifiers[0].identifier;
+            div.attr("isbn", isbn);
+            console.log("test");
+
+            var bookTitle = $("<p>");
+            bookTitle.text(books[i].volumeInfo.title);
+            div.append(bookTitle);
+
+            var author = $("<p>");
+            author.text(books[i].volumeInfo.authors[0]);
+            div.append(author);
+
+            var img = $("<img>");
+            img.height(125);
+            img.width(82.25);
+            img.attr("src", books[i].volumeInfo.imageLinks.smallThumbnail);
+            div.append(img);
+
+            $(".search-results").append(div);
+        }
+    }
+}
+
+function allAboutABook(qResponse) {
+    var volInfo = qResponse.items[0].volumeInfo;
+    $(".all-about-a-book").empty();
+
+    var bookTitle = $("<p>");
+    bookTitle.text(volInfo.title);
+    $(".all-about-a-book").append(bookTitle);
+
+    var author = $("<p>");
+    var authorText = "";
+    volInfo.authors.forEach(author => {
+        authorText = authorText + "," + author;
+    });
+    if (authorText[0] === ",") {
+        authorText = authorText.substr(1);
+    }
+    author.text(authorText);
+    $(".all-about-a-book").append(author);
+
+    var rating = $("<p>");
+    rating.text(createStarRating(Math.round(volInfo.averageRating)));
+    $(".all-about-a-book").append(rating);
+
+    var img = $("<img>");
+    img.attr("src", volInfo.imageLinks.thumbnail);
+    $(".all-about-a-book").append(img);
+
+    var description = $("<p>");
+    description.text(volInfo.description);
+    $(".all-about-a-book").append(description);
+
+    var publish = $("<p>");
+    publish.text("Published: " + volInfo.publishedDate + ", " + volInfo.publisher);
+    $(".all-about-a-book").append(publish);
+
+    var previewLink = $("<a>");
+    previewLink.text("Preview");
+    previewLink.attr("href", volInfo.previewLink);
+    previewLink.attr("target", "blank");
+    $(".all-about-a-book").append(previewLink);
+
+    var saleInfo = qResponse.items[0].saleInfo;
+    var saleP = $("<p>");
+    $(".all-about-a-book").append(description);
+    if (saleInfo.saleability === "NOT_FOR_SALE") {
+        saleP.text("Not for sale in " + saleInfo.country);
+    }
+    else {
+        saleP.text("++++++");
+    }
+    $(".all-about-a-book").append(saleP);
+}
+
+function createStarRating(rating) {
+    ratingText = "";
+    for (var i = 1; i < rating; i++) {
+        ratingText = ratingText + "★";
+    }
+    return "Average Rating: " + ratingText;
+}
+
+// Add to most popular reads
+runQuery(createNYTQueryURL(), "json", "Popular");
+
+// on-click event watching the 'recommended-list' container 
+// for clicks on the dynamically generated divs
+$(".recommended-list").on("click", "div", function (event) {
+    event.preventDefault();
+    var isbn = $(this).attr("isbn");
+    //console.log(isbn);
+    var gQuery = createGoogleQueryURL("", "", "", "", "", isbn, "", "");
+    runQuery(gQuery, "json", "AllAboutABook");
+});
+
+// on-click event for the search button
+$(".is-success").on("click", function (event) {
+    event.preventDefault();
+    if ($(".input").val()) {
+        var bookName = $(".input").val();
+        var gQuery = createGoogleQueryURL("", bookName, "", "", "", "", "", "");
+        $(".input").val("");
+        runQuery(gQuery, "json", "SearchResult");
+    }
+});
+
+// on-click event watching the 'search results' container 
+// for clicks on the dynamically generated divs
+$(".search-results").on("click", "div", function (event) {
+    event.preventDefault();
+    var isbn = $(this).attr("isbn");
+    //console.log(isbn);
+    var gQuery = createGoogleQueryURL("", "", "", "", "", isbn, "", "");
+    runQuery(gQuery, "json", "AllAboutABook");
+});
+
+
+
