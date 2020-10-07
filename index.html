@@ -12,7 +12,6 @@
 </head>
 
 <body>
-
     <div class="column">
         <div class="column is-full">
             <div class="firstRow">
@@ -26,28 +25,54 @@
             <div class="column is-full-mobile is-4-tablet is-4-desktop">
                 <div class="RowTwoCol1">
                     <aside class="MostReadbooks">
-                        <p class="menu-label">
-                            Most Read Books
-                        </p>
-                        <ul class="recommended-list">
-                            <li><a>Dashboard</a></li>
-                            <li><a>Customers</a></li>
-                            <li><a>Invitations</a></li>
-                            <li><a>Cloud Storage Environment Settings</a></li>
-                            <li><a>Authentication</a></li>
-                            <li><a>Payments</a></li>
-                            <li><a>Transfers</a></li>
-                            <li><a>Balance</a></li>
-                            <li><a>Balance</a></li>
-                            <li><a>Balance</a></li>
-                        </ul>
+
+                        <div class="card is-fullwidth">
+                            <header class="card-header">
+                                <p class="card-header-title">Most Read Books</p>
+                                <a class="card-header-icon card-toggle">
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                            </header>
+                            <div class="card-content is-hidden">
+
+                                <div class="recommended-list">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card is-fullwidth">
+                            <header class="card-header">
+                                <p class="card-header-title">Search Results</p>
+                                <a class="card-header-icon card-toggle">
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                            </header>
+                            <div class="card-content is-hidden">
+                                
+                                <div class="search-results">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card is-fullwidth">
+                            <header class="card-header">
+                                <p class="card-header-title">Reading List</p>
+                                <a class="card-header-icon card-toggle">
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                            </header>
+                            <div class="card-content is-hidden">
+                                
+                                <div class="recommended-list">
+                                </div>
+                            </div>
+                        </div>
                     </aside>
                 </div>
             </div>
+
             <div class="column is-full-mobile is-8-tablet is-8-desktop">
                 <div class="RowTwoCol2">
                     <div class="field">
-                        <input class="input is-medium" type="text" placeholder="Please type in book name">
+                        <input class="input is-medium" type="text" placeholder="Enter book name to get started">
                     </div>
                     <br>
 
@@ -55,48 +80,21 @@
                 <div class="field">
                     <p class="control">
                         <button class="button is-success">
-                            <i class="fas fa-search fa-fw"></i>   Search
+                            <i class="fas fa-search fa-fw"></i>Search
                         </button>
                     </p>
+                </div>
+                <div class="all-about-a-book column is-full-mobil is-4-table is-4-desktop">
+
                 </div>
             </div>
         </div>
     </div>
-    <!-- <section class="banner">
-        <div class="container-1">
-            <h1 class="title">
-                Book Search
-            </h1>
-        </div>
-    </section>
-    <section class="hero is-fullheight">
-        <div class="container">
-            <div class="columns is-desktop">
-                <div class="column is-one-quarter-desktop">
-                    
-                </div>
-            
-                    
-                        <div class="column is-desktop">
-                            <div class="field">
-                                <div class="control">
-                                    <input class="input is-large" type="text" placeholder="Book Name">
-                                </div>
-                            </div>
-                            <button class="button is-link is-rounded">Search</button>
-                        </div>
-                    
-                </div>
-            
-        </div>
-    </section> -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./assests/api/key.js"></script>
+    <script type="text/javascript" src="./assests/api/grScript.js"></script>
 
 </body>
 
 </html>
-
-<!-- <div class="field">
-    <div class="control">
-        <input class="input is-large" type="text" placeholder="Large input">
-    </div>
-</div> -->

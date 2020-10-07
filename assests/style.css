@@ -59,10 +59,10 @@ h1{
 
 .hero{
     background: url(./Images/annie-spratt-IQrPWwuTf5M-unsplash.jpg) center/cover;
-    margin: 0px;
+    margin: 0;
     overflow-x: hidden;
     width: 100%;
-    padding: 0px;
+    padding: 0;
 }
 
 .column{
@@ -86,7 +86,7 @@ h1{
     height: auto;
     justify-content: center;
     align-items: center;
-    margin: 0px; 
+    margin: 0px;
 }
 
 @media (min-width:768px){
@@ -99,4 +99,15 @@ h1{
   .input{
     width: 1000px;
   }
+}
+
+@media (min-width:800px){
+  .input{
+    width: 500px;
+  }
+
+}
+
+.rating{
+  color: yellow;
 }
