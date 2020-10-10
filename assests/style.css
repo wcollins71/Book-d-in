@@ -120,3 +120,11 @@ h1{
   background-color: lightgrey;
 }
 
+.zoom {
+  transition: transform 0.5s;
+ }
+
+.zoom:hover{
+  transform: scale(1.1);
+}
+
