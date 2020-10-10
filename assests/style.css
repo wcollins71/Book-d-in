@@ -66,12 +66,10 @@ h1{
 }
 
 .column{
-    padding: 0;
+    padding: 10px;
 }
 
-#cardColumn{
-  padding: 10px;
-  }
+
 .columns{
     padding: 0;
 }
