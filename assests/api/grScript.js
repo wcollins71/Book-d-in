@@ -206,12 +206,11 @@ function addToEle(qResponse, isLibrary) {
 function allAboutABook(qResponse) {
     var volInfo = qResponse.items[0].volumeInfo;
     $(".all-about-a-book").empty();
-    $(".all-about-a-book").attr("style", "color: white");
 
     var bookTitle = $("<p>");
     bookTitle.text(volInfo.title);
+    bookTitle.addClass("title");
     $(".all-about-a-book").append(bookTitle);
-    $(".all-about-a-book").attr("id", "titleEl");
 
     var author = $("<p>");
     var authorText = "";
@@ -225,7 +224,7 @@ function allAboutABook(qResponse) {
     $(".all-about-a-book").append(author);
 
     var rating = $("<p>");
-    //rating.addClass("rating");
+    rating.addClass("rating");
     rating.text(createStarRating(Math.round(volInfo.averageRating)));
     $(".all-about-a-book").append(rating);
 
@@ -259,7 +258,7 @@ function allAboutABook(qResponse) {
     $(".all-about-a-book").append(saleP);
 
     var btn = $("<button>");
-    btn.addClass("book-store");
+    btn.addClass("book-store button is-success");
     var isbn = volInfo.industryIdentifiers[0].identifier;
     if (myLibrary.indexOf(isbn) === -1) {
         btn.text("Add To Reading List");
@@ -269,7 +268,7 @@ function allAboutABook(qResponse) {
     }
     btn.attr("isbn", isbn)
     $(".all-about-a-book").append(btn);
-    document.getElementById("titleEl").scrollIntoView();
+    document.getElementById("searchBar").scrollIntoView();
 }
 
 function createStarRating(rating) {

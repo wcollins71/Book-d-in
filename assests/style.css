@@ -66,7 +66,7 @@ h1{
 }
 
 .column{
-    padding: 0;
+    padding: 10px;
 }
 
 .columns{
@@ -91,7 +91,7 @@ h1{
 
 @media (min-width:768px){
   .input{
-    width: 600px;
+    width: 80%;
   }
 }
 
@@ -120,3 +120,14 @@ h1{
   background-color: lightgrey;
 }
 
+
+.all-about-a-book{
+  color: white;
+}
+
+
+.title{
+  font-weight: bold;
+   font-size: 200%;
+   color: white;
+   }
