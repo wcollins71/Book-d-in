@@ -21,11 +21,11 @@ h1{
   padding: 0;
   margin-left: 4em;
   margin-top: 2em;
-  position: absolute;
+
 }
 
 .input {
-  position: relative;
+ 
   text-align: center;
   margin-top: 10%;
   margin-left: 30%;
@@ -121,7 +121,6 @@ h1{
   background-color: lightgrey;
 }
 
-<<<<<<< HEAD
 
 .all-about-a-book{
   color: white;
@@ -133,7 +132,7 @@ h1{
    font-size: 200%;
    color: white;
    }
-=======
+
 .zoom {
   transition: transform 0.5s;
  }
@@ -142,4 +141,8 @@ h1{
   transform: scale(1.1);
 }
 
->>>>>>> grScriptUpdates
+
+.all-about-a-book{
+  padding-bottom: 15px;
+}
+
