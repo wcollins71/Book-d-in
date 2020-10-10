@@ -1,10 +1,19 @@
+var myLibrary = [];
+
+function loadLibraryFromLS() {
+    var mLib = localStorage.getItem("BookdInLibrary");
+    if (mLib !== null) {
+        myLibrary = JSON.parse(mLib);
+    }
+}
+
 function runQuery(queryURL, dataType, resultTo) {
     $.ajax({
         url: queryURL,
         method: "GET"
     })
         .then(function (response) {
-            console.log("response", response);
+            //console.log("response", response);
             switch (dataType) {
                 case "json":
                     break;
@@ -17,7 +26,10 @@ function runQuery(queryURL, dataType, resultTo) {
                     addToPopular(response);
                     break;
                 case "SearchResult":
-                    addToSearch(response);
+                    addToEle(response, false);
+                    break;
+                case "MyLibrary":
+                    addToEle(response, true);
                     break;
                 case "AllAboutABook":
                     allAboutABook(response);
@@ -80,17 +92,17 @@ function createGoodreadsQueryURL(title = "", author = "", isbn = "", authorID = 
 
     // These query urls return xml data - needs to be converted.
     if (author !== "" && title === "" && isbn === "") {
-        console.log("goodreads: author search");
+        //console.log("goodreads: author search");
         author = author.replace(/ /g, "%20");
         grQueryURL = "api/author_url/" + author + "?key=" + goodreadsKey;
     }
     else if (authorID !== "") {
-        console.log("goodreads: author id");
+        //console.log("goodreads: author id");
         authorID = authorID.trim();
         grQueryURL = "author/list/" + authorID + "?format=xml&key=" + goodreadsKey;
     }
     else {
-        console.log("goodreads: search all");
+        //console.log("goodreads: search all");
         searchtext = title + "+" + author + "+" + isbn;
         searchtext = searchtext.replace(/ /g, "+");
         grQueryURL = "search/index.xml?key=" + goodreadsKey + "&q=" + searchtext;
@@ -102,7 +114,7 @@ function createGoodreadsQueryURL(title = "", author = "", isbn = "", authorID = 
 // https://developer.nytimes.com/docs/books-product/1/overview
 function createNYTQueryURL() {
     nytQueryURL = "https://api.nytimes.com/svc/books/v3/lists/current/hardcover-fiction.json?api-key=" + NYTKey;
-    console.log(nytQueryURL);
+    //console.log(nytQueryURL);
     return nytQueryURL;
 }
 
@@ -144,15 +156,33 @@ function addToPopular(qResponse) {
     }
 }
 
-function addToSearch(qResponse) {
+function addToEle(qResponse, isLibrary) {
     var books = qResponse.items;
-    $(".search-results").empty();
-    for (var i = 0; i < 10; i++) {
+
+    var mainEle;
+
+    if (isLibrary) {
+        mainEle = ".reading-list";
+    }
+    else {
+        mainEle = ".search-results";
+        $(mainEle).empty();
+        //document.getElementsByClassName('search-results')[0].parentElement.classList.remove("is-hidden");
+        if (books === undefined) {
+            var noResults = $("<p>");
+            noResults.text("No results found. Please try again.");
+            $(mainEle).append(noResults);
+            return;
+        }
+    }
+
+    var count = Math.min(10, books.length)
+    for (var i = 0; i < count; i++) {
+        //console.log(books[i]);
         if (books[i].volumeInfo.hasOwnProperty("industryIdentifiers")) {
             var div = $("<div>");
             var isbn = books[i].volumeInfo.industryIdentifiers[0].identifier;
             div.attr("isbn", isbn);
-            console.log("test");
 
             var bookTitle = $("<p>");
             bookTitle.text(books[i].volumeInfo.title);
@@ -168,7 +198,7 @@ function addToSearch(qResponse) {
             img.attr("src", books[i].volumeInfo.imageLinks.smallThumbnail);
             div.append(img);
 
-            $(".search-results").append(div);
+            $(mainEle).append(div);
         }
     }
 }
@@ -176,6 +206,7 @@ function addToSearch(qResponse) {
 function allAboutABook(qResponse) {
     var volInfo = qResponse.items[0].volumeInfo;
     $(".all-about-a-book").empty();
+    $(".all-about-a-book").attr("style", "color: white");
 
     var bookTitle = $("<p>");
     bookTitle.text(volInfo.title);
@@ -193,7 +224,7 @@ function allAboutABook(qResponse) {
     $(".all-about-a-book").append(author);
 
     var rating = $("<p>");
-    rating.addClass("rating");
+    //rating.addClass("rating");
     rating.text(createStarRating(Math.round(volInfo.averageRating)));
     $(".all-about-a-book").append(rating);
 
@@ -225,6 +256,18 @@ function allAboutABook(qResponse) {
         saleP.text("++++++");
     }
     $(".all-about-a-book").append(saleP);
+
+    var btn = $("<button>");
+    btn.addClass("book-store");
+    var isbn = volInfo.industryIdentifiers[0].identifier;
+    if (myLibrary.indexOf(isbn) === -1) {
+        btn.text("Add To Reading List");
+    }
+    else {
+        btn.text("Remove From Reading List");
+    }
+    btn.attr("isbn", isbn)
+    $(".all-about-a-book").append(btn);
 }
 
 function createStarRating(rating) {
@@ -252,19 +295,80 @@ $(".recommended-list").on("click", "div", function (event) {
 $(".is-success").on("click", function (event) {
     event.preventDefault();
     if ($(".input").val()) {
-        var bookName = $(".input").val();
-        var gQuery = createGoogleQueryURL("", bookName, "", "", "", "", "", "");
-        $(".input").val("");
-        runQuery(gQuery, "json", "SearchResult");
+        runSearch();
     }
 });
+
+// keypress event (Enter) for search field
+$(".input").keypress(function (event) {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode == "13" && $(".input").val()) {
+        runSearch();
+    }
+})
+
+function runSearch() {
+    var bookName = $(".input").val();
+    var gQuery = createGoogleQueryURL("", bookName, "", "", "", "", "", "");
+    $(".input").val("");
+    runQuery(gQuery, "json", "SearchResult");
+}
 
 // on-click event watching the 'search results' container 
 // for clicks on the dynamically generated divs
 $(".search-results").on("click", "div", function (event) {
     event.preventDefault();
     var isbn = $(this).attr("isbn");
-    console.log(isbn);
+    //console.log(isbn);
     var gQuery = createGoogleQueryURL("", "", "", "", "", isbn, "", "");
     runQuery(gQuery, "json", "AllAboutABook");
 });
+
+// on-click event watching the 'reading-list' container 
+// for clicks on the dynamically generated divs
+$(".reading-list").on("click", "div", function (event) {
+    event.preventDefault();
+    var isbn = $(this).attr("isbn");
+    //console.log(isbn);
+    var gQuery = createGoogleQueryURL("", "", "", "", "", isbn, "", "");
+    runQuery(gQuery, "json", "AllAboutABook");
+});
+
+function addLibraryToLS() {
+    localStorage.setItem("BookdInLibrary", JSON.stringify(myLibrary));
+}
+
+// on-click event to add/remove myLibrary(Reading List) in local storage
+$(".all-about-a-book").on("click", "button", function (event) {
+    event.preventDefault();
+    var isbn = $(this).attr("isbn");
+    //console.log(isbn);
+    if (myLibrary.indexOf(isbn) === -1) {
+        myLibrary.push(isbn);
+        addLibraryToLS();
+        $(this).text("Remove From Reading List")
+    }
+    else {
+        var indexOf = myLibrary.indexOf(isbn);
+        myLibrary.splice(indexOf, 1);
+        addLibraryToLS();
+        $(this).text("Add To Reading List")
+    }
+    CreateMyLibrary();
+});
+
+function CreateMyLibrary() {
+    $(".reading-list").empty();
+    myLibrary.forEach(isbn => {
+        //console.log(isbn);
+        var gQuery = createGoogleQueryURL("", "", "", "", "", isbn, "", "");
+        runQuery(gQuery, "json", "MyLibrary");
+    });
+}
+
+function init() {
+    loadLibraryFromLS();
+    CreateMyLibrary();
+}
+
+init();
