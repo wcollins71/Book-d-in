@@ -4,23 +4,23 @@
   box-sizing: border-box;
 }
 
-
-
 .field {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.hero {
-  background: url(./Images/annie-spratt-IQrPWwuTf5M-unsplash.jpg) center/cover;
+h1{
+  font-size: 50px;
+  font-family: 'Actor', sans-serif;
+  color: white;
+  font-weight: bold;
 }
 
 .container {
   padding: 0;
   margin-left: 4em;
   margin-top: 2em;
-  position: absolute;
 }
 
 .input {
@@ -36,11 +36,9 @@
     justify-content: center;
     align-items: center;
     padding-top: 1em;
-    color: white;
-    background: url(./Images/stanislav-kondratiev-6pO3QFkk7hQ-unsplash.jpg) center/cover;
+    background: linear-gradient(rgba(51,51,51,0.5), rgba(102,102,102, 0.5)), url(./Images/stanislav-kondratiev-6pO3QFkk7hQ-unsplash.jpg) center/cover;
     height: 7em;
     margin-right: 0;
-    margin-bottom: 0;
 }
 
 .RowTwoCol1{
@@ -57,12 +55,17 @@
     align-items: center;
     margin-top: 4em;
 }
-.hero{
-    background: url(./Images/annie-spratt-IQrPWwuTf5M-unsplash.jpg) center/cover;
-    margin: 0; 
-}
-.column{
 
+.hero{
+  
+    background: linear-gradient(rgba(51,51,51,0.5), rgba(102,102,102, 0.5)), url(./Images/annie-spratt-IQrPWwuTf5M-unsplash.jpg) center/cover;
+    margin: 0;
+    overflow-x: hidden;
+    width: 100%;
+    padding: 0;
+}
+
+.column{
     padding: 0;
 }
 
@@ -79,7 +82,37 @@
 }
 
 .input{
-    width: 300px;
+    width: 100%;
+    height: auto;
     justify-content: center;
     align-items: center;
+    margin: 0px;
+}
+
+@media (min-width:768px){
+  .input{
+    width: 600px;
+  }
+}
+
+@media (min-width:1200px){
+  .input{
+    width: 1000px;
+  }
+}
+
+@media (min-width:800px){
+  .input{
+    width: 500px;
+  }
+
+}
+
+.rating{
+  color: yellow;
+}
+
+.all-about-a-book {
+  justify-content: center;
+  align-items: center;
 }
