@@ -211,6 +211,7 @@ function allAboutABook(qResponse) {
     var bookTitle = $("<p>");
     bookTitle.text(volInfo.title);
     $(".all-about-a-book").append(bookTitle);
+    $(".all-about-a-book").attr("id", "titleEl");
 
     var author = $("<p>");
     var authorText = "";
@@ -268,6 +269,7 @@ function allAboutABook(qResponse) {
     }
     btn.attr("isbn", isbn)
     $(".all-about-a-book").append(btn);
+    document.getElementById("titleEl").scrollIntoView();
 }
 
 function createStarRating(rating) {
@@ -296,6 +298,16 @@ $(".is-success").on("click", function (event) {
     event.preventDefault();
     if ($(".input").val()) {
         runSearch();
+        var bookName = $(".input").val();
+        var gQuery = createGoogleQueryURL("", bookName, "", "", "", "", "", "");
+        $(".input").val("");
+        runQuery(gQuery, "json", "SearchResult");
+        var recommendedCard = $("#recommendedCard");
+        recommendedCard.addClass("is-hidden");
+        var readingListCard = $("#readingListCard");
+        readingListCard.addClass("is-hidden");
+        var searchCard = $("#searchCard");
+        searchCard.removeClass("is-hidden");
     }
 });
 

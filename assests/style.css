@@ -111,3 +111,12 @@ h1{
 .rating{
   color: yellow;
 }
+
+.card-header{
+ background-color: grey;
+}
+
+.card-content{
+  background-color: lightgrey;
+}
+
