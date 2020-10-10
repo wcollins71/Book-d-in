@@ -58,7 +58,7 @@ h1{
 }
 
 .hero{
-    background: url(./Images/annie-spratt-IQrPWwuTf5M-unsplash.jpg) center/cover;
+    background: linear-gradient(rgba(51,51,51,0.5), rgba(102,102,102, 0.5)), url(./Images/annie-spratt-IQrPWwuTf5M-unsplash.jpg) center/cover;
     margin: 0;
     overflow-x: hidden;
     width: 100%;
@@ -66,7 +66,7 @@ h1{
 }
 
 .column{
-    padding: 10px;
+    padding: 0;
 }
 
 
