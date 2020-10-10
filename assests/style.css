@@ -121,6 +121,7 @@ h1{
   background-color: lightgrey;
 }
 
+<<<<<<< HEAD
 
 .all-about-a-book{
   color: white;
@@ -132,3 +133,13 @@ h1{
    font-size: 200%;
    color: white;
    }
+=======
+.zoom {
+  transition: transform 0.5s;
+ }
+
+.zoom:hover{
+  transform: scale(1.1);
+}
+
+>>>>>>> grScriptUpdates
